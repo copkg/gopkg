@@ -56,7 +56,7 @@ type CustomerListRequest struct {
 	CustFirstRecordDateMax string   `json:"cust_first_record_date_max"`
 	CustLastRecordDateMin  string   `json:"cust_last_record_date_min"`
 	CustLastRecordDateMax  string   `json:"cust_last_record_date_max"`
-	TID                    int64    `json:"tid" binding:"required" error:"tid不能为空"`
+	TID                    int64    `json:"tid"`
 }
 
 type CustomerListResponse struct {
