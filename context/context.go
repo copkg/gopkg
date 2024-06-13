@@ -70,6 +70,7 @@ func (ctx *Context) Bind(data interface{}) error {
 	return nil
 }
 func (ctx *Context) Error(err error) {
+	statusCode := http.StatusBadRequest
 	ret := gin.H{
 		"code": http.StatusBadRequest,
 		"msg":  err.Error(),
@@ -79,6 +80,7 @@ func (ctx *Context) Error(err error) {
 		ret["code"] = e.Code
 		ret["msg"] = e.Msg
 		ret["err"] = e.Err.Error()
+		statusCode = e.StatusCode
 	}
-	ctx.JSON(http.StatusOK, ret)
+	ctx.JSON(statusCode, ret)
 }

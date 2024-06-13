@@ -7,9 +7,10 @@ import (
 var ErrNotFound = sql.ErrNoRows
 
 type Error struct {
-	Code int    `json:"code,omitempty"`
-	Msg  string `json:"msg,omitempty"`
-	Err  error  `json:"err,omitempty"`
+	StatusCode int    `json:"-"`
+	Code       int    `json:"code,omitempty"`
+	Msg        string `json:"msg,omitempty"`
+	Err        error  `json:"err,omitempty"`
 }
 
 func (e Error) Error() string {
