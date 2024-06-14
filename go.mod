@@ -1,6 +1,6 @@
 module github.com/copkg/gopkg
 
-go 1.21.11
+go 1.21.4
 
 require (
 	github.com/gin-gonic/gin v1.10.0
@@ -23,7 +23,6 @@ require (
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/apache/thrift v0.20.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
