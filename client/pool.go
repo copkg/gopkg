@@ -9,6 +9,7 @@ import (
 	"github.com/smallnest/rpcx/client"
 	"log"
 	"sync"
+	"time"
 )
 
 var m sync.Map
@@ -25,6 +26,9 @@ func Get(serviceName string) client.XClient {
 	}
 	option := client.DefaultOption
 	option.Heartbeat = true
+	option.HeartbeatInterval = time.Second
+	option.MaxWaitForHeartbeat = 2 * time.Second
+	option.IdleTimeout = 3 * time.Second
 	pool := client.NewXClientPool(config.Conf.GetInt("service.pool_size"), serviceName, client.Failtry, client.RandomSelect, d, option)
 	//defer pool.Close()
 	m.Store(serviceName, pool)
