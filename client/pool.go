@@ -7,14 +7,15 @@ import (
 	"github.com/copkg/gopkg/schema"
 	etcd_client "github.com/rpcxio/rpcx-etcd/client"
 	"github.com/smallnest/rpcx/client"
+	"github.com/smallnest/rpcx/share"
 	"log"
 	"sync"
-	"time"
 )
 
 var m sync.Map
 
 func Get(serviceName string) client.XClient {
+	share.Trace = true
 	if cl, ok := m.Load(serviceName); ok && cl != nil {
 		p := cl.(*client.XClientPool)
 		return p.Get()
@@ -24,12 +25,7 @@ func Get(serviceName string) client.XClient {
 		log.Panicf("获取client pool err:%s", err.Error())
 		return nil
 	}
-	option := client.DefaultOption
-	option.Heartbeat = true
-	option.HeartbeatInterval = time.Second
-	option.MaxWaitForHeartbeat = 2 * time.Second
-	option.IdleTimeout = 3 * time.Second
-	pool := client.NewXClientPool(config.Conf.GetInt("service.pool_size"), serviceName, client.Failtry, client.RandomSelect, d, option)
+	pool := client.NewXClientPool(config.Conf.GetInt("service.pool_size"), serviceName, client.Failtry, client.RandomSelect, d, client.DefaultOption)
 	//defer pool.Close()
 	m.Store(serviceName, pool)
 	return pool.Get()
