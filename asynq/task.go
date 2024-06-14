@@ -16,7 +16,7 @@ type SmsSendPayload struct {
 	SendID  int64  `json:"send_id"`
 }
 
-func NewEmailDeliveryTask(mobile, content string, sendid int64) (*asynq.Task, error) {
+func NewSmsSendTask(mobile, content string, sendid int64) (*asynq.Task, error) {
 	payload, err := json.Marshal(SmsSendPayload{Mobile: mobile, Content: content, SendID: sendid})
 	if err != nil {
 		return nil, err
