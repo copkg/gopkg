@@ -1,5 +1,7 @@
 package schema
 
+import validation "github.com/go-ozzo/ozzo-validation/v4"
+
 type Customer struct {
 	CustNo              string `json:"cust_no" db:"cust_no"`
 	CustIdCard          string `json:"cust_id_card" db:"cust_id_card"`
@@ -57,6 +59,13 @@ type CustomerListRequest struct {
 	CustLastRecordDateMin  string   `json:"cust_last_record_date_min"`
 	CustLastRecordDateMax  string   `json:"cust_last_record_date_max"`
 	TID                    int64    `json:"tid"`
+}
+
+func (a CustomerListRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Page, validation.Required),
+		validation.Field(&a.Size, validation.Required),
+	)
 }
 
 type CustomerListResponse struct {

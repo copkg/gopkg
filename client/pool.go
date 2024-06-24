@@ -34,14 +34,14 @@ func Call(serviceName, serviceMethod string, req, res interface{}) error {
 	cli := Get(serviceName)
 	if cli == nil {
 		log.Printf("创建rpc连接失败")
-		return schema.Error{
+		return &schema.Error{
 			Code: 500,
 			Err:  errors.New("rpc服务连接失败"),
 		}
 	}
 	if err := cli.Call(context.Background(), serviceMethod, req, res); err != nil {
 		log.Printf("call rpc service err:%s", err.Error())
-		return schema.Error{
+		return &schema.Error{
 			Code: 500,
 			Err:  err,
 		}

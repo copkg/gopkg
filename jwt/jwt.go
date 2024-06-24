@@ -14,7 +14,7 @@ type CustomClaims struct {
 	Id      int64  `json:"id,omitempty"`
 	StaffNo string `json:"staffNo,omitempty"`
 	Key     string `json:"key,omitempty"`
-	jwt.StandardClaims
+	jwt.MapClaims
 }
 
 var (

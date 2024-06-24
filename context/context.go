@@ -3,9 +3,8 @@ package context
 import (
 	"github.com/copkg/gopkg/schema"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"net/http"
-	"reflect"
 	"time"
 )
 
@@ -45,29 +44,13 @@ func (ctx *Context) Success(data interface{}) {
 func (ctx *Context) Bind(data interface{}) error {
 	err := ctx.ShouldBind(data)
 	if err != nil {
-		if errs, ok := err.(validator.ValidationErrors); ok {
-			for _, e := range errs {
-				obj := reflect.TypeOf(data)
-				if obj.Kind() == reflect.Ptr {
-					obj = obj.Elem()
-				}
-				if f, exist := obj.FieldByName(e.Field()); exist {
-					return schema.Error{
-						Code: 422,
-						Msg:  f.Tag.Get("error"),
-						Err:  e,
-					}
-				}
-				return schema.Error{
-					Code: 422,
-					Msg:  "数据验证不通过",
-					Err:  e,
-				}
-			}
+		return &schema.Error{
+			Code: http.StatusBadRequest,
+			Msg:  "请求数据解析错误",
+			Err:  err,
 		}
-		return err
 	}
-	return nil
+	return err
 }
 func (ctx *Context) Error(err error) {
 	statusCode := http.StatusBadRequest
@@ -81,6 +64,24 @@ func (ctx *Context) Error(err error) {
 		ret["msg"] = e.Msg
 		ret["err"] = e.Err.Error()
 		statusCode = e.StatusCode
+	}
+	if e, ok := err.(schema.Error); ok {
+		ret["code"] = e.Code
+		ret["msg"] = e.Msg
+		ret["err"] = e.Err.Error()
+		statusCode = e.StatusCode
+	}
+	if e, ok := err.(validation.InternalError); ok {
+		ret["code"] = http.StatusInternalServerError
+		ret["msg"] = "数据验证不通过"
+		ret["err"] = e.Error()
+		statusCode = http.StatusInternalServerError
+	}
+	if e, ok := err.(validation.Errors); ok {
+		ret["code"] = http.StatusUnprocessableEntity
+		ret["msg"] = "数据验证不通过"
+		ret["err"] = e.Error()
+		statusCode = http.StatusUnprocessableEntity
 	}
 	ctx.JSON(statusCode, ret)
 }
