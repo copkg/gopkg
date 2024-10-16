@@ -29,7 +29,7 @@ type UserListRequest struct {
 
 type UserListResponse struct {
 	Users []*User `json:"users"`
-	*Error
+	Error
 }
 
 type UserRequest struct {
@@ -38,7 +38,7 @@ type UserRequest struct {
 
 type UserResponse struct {
 	User *User `json:"user"`
-	*Error
+	Error
 }
 
 func (a UserRequest) Validate() error {
@@ -52,9 +52,9 @@ type SnsLoginRequest struct {
 	Code string `json:"code"`
 }
 type SnsLoginResponse struct {
-	*Error
-	Token string `json:"token"`
-	Exp   int64  `json:"exp"`
+	Error
+	Token string `json:"token,omitempty"`
+	Exp   int64  `json:"exp,omitempty"`
 }
 
 func (a SnsLoginRequest) Validate() error {
