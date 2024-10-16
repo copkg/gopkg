@@ -2,31 +2,31 @@ package jwt
 
 import (
 	"errors"
-	jwt "github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
+	"time"
+)
+
+var (
+	TokenInvalid = errors.New("token invalid")
 )
 
 type JWT struct {
-	SigningKey  []byte
-	BufferTime  int
-	ExpiresTime int
+	SigningKey    string
+	ExpiresTime   int64
+	SigningMethod string
 }
 type CustomClaims struct {
-	Id      int64  `json:"id,omitempty"`
-	StaffNo string `json:"staffNo,omitempty"`
-	Key     string `json:"key,omitempty"`
-	jwt.MapClaims
+	StaffNo string `json:"staff_no,omitempty"`
+	Name    string `json:"name,omitempty"`
+	AppID   int    `json:"app_id,omitempty"`
+	jwt.RegisteredClaims
 }
-
-var (
-	TokenExpired     = errors.New("Token is expired")
-	TokenNotValidYet = errors.New("Token not active yet")
-	TokenMalformed   = errors.New("That's not even a token")
-	TokenInvalid     = errors.New("Couldn't handle this token:")
-)
 
 func NewJWT(c JWT) *JWT {
 	return &JWT{
-		SigningKey: []byte(c.SigningKey),
+		SigningKey:    c.SigningKey,
+		ExpiresTime:   c.ExpiresTime,
+		SigningMethod: c.SigningMethod,
 	}
 }
 
@@ -37,28 +37,26 @@ func (j *JWT) CreateClaims() CustomClaims {
 
 // 创建一个token
 func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(j.SigningKey)
+	var signingMethod jwt.SigningMethod
+	switch j.SigningMethod {
+	case "HS256":
+		signingMethod = jwt.SigningMethodHS256
+	case "HS512":
+		signingMethod = jwt.SigningMethodHS512
+	case "HS384":
+		signingMethod = jwt.SigningMethodHS384
+	}
+	token := jwt.NewWithClaims(signingMethod, claims)
+	return token.SignedString([]byte(j.SigningKey))
 }
 
 // 解析 token
 func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
-		return j.SigningKey, nil
-	})
+		return []byte(j.SigningKey), nil
+	}, jwt.WithLeeway(5*time.Second))
 	if err != nil {
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return nil, TokenMalformed
-			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				// Token is expired
-				return nil, TokenExpired
-			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
-				return nil, TokenNotValidYet
-			} else {
-				return nil, TokenInvalid
-			}
-		}
+		return nil, err
 	}
 	if token != nil {
 		if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {

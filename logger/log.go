@@ -18,6 +18,7 @@ type LogConf struct {
 	MaxAge     int
 	Compress   bool
 }
+type Hook = logrus.Hook
 
 func MustSetup(c *LogConf) {
 	SetFormatter(c.Format)
@@ -56,6 +57,9 @@ func SetOutput(out io.Writer) {
 
 func SetLevel(level int) {
 	logrus.SetLevel(logrus.Level(level))
+}
+func AddHook(hook Hook) {
+	logrus.AddHook(hook)
 }
 
 // 显示行号

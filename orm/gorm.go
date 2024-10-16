@@ -41,7 +41,7 @@ func NewGorm(c *MysqlConf) *gorm.DB {
 		log.Panicf("db connnet err: %v", err)
 	}
 	if c.Debug {
-		db.Debug()
+		db = db.Debug()
 	}
 	return db
 }

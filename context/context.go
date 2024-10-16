@@ -8,22 +8,30 @@ import (
 	"time"
 )
 
+// 定义全局上下文中的键
+type (
+	ClientIPCtx struct{}
+)
+
 type Context struct {
 	*gin.Context
-	UserValue map[string]interface{}
+	UserValue map[any]interface{}
 }
 type HandlerFunc func(c *Context)
 
 func HandleFunc(handler HandlerFunc) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		c := new(Context)
+		c.SetUserValue(ClientIPCtx{}, ctx.ClientIP())
 		c.Context = ctx
 		handler(c)
 	}
 }
 
-func (ctx *Context) SetUserValue(key string, value interface{}) {
-	ctx.UserValue[key] = value
+func (ctx *Context) SetUserValue(key any, value interface{}) {
+	m := make(map[any]interface{})
+	m[key] = value
+	ctx.UserValue = m
 }
 
 // GetUserValue get the value of key.
