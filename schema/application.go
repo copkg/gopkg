@@ -19,7 +19,7 @@ type Application struct {
 }
 type ApplicationResponse struct {
 	Applicatin *Application `json:"applicatin"`
-	*Error
+	*Comm
 }
 
 type ApplicationListRequest struct {
@@ -27,5 +27,5 @@ type ApplicationListRequest struct {
 
 type ApplicationListResponse struct {
 	Applications []*Application `json:"applications"`
-	*Error
+	*Comm
 }

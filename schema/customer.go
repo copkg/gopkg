@@ -70,11 +70,11 @@ func (a CustomerListRequest) Validate() error {
 
 type CustomerListResponse struct {
 	Customers []*Customer `json:"customers"`
-	*Error
+	*Comm
 	Total int64 `json:"total"`
 }
 
 type CustomerMobileResponse struct {
 	Mobiles []string `json:"mobiles,omitempty"`
-	*Error
+	*Comm
 }

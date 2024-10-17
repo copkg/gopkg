@@ -19,7 +19,7 @@ type SmsLogListResponse struct {
 	Total int       `json:"total"`
 	Page  int       `json:"page,omitempty"`
 	Size  int       `json:"size,omitempty"`
-	*Error
+	*Comm
 }
 
 type SmsLogRequest struct {

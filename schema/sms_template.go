@@ -18,7 +18,7 @@ func (a SendSmsRequest) Validate() error {
 }
 
 type SendSmsResponse struct {
-	*Error
+	*Comm
 	TaskID int64 `json:"task_id"`
 }
 
@@ -35,7 +35,7 @@ type SmsTemplateListRequest struct {
 
 type SmsTemplateListResponse struct {
 	Templates []*SmsTemplate `json:"templates"`
-	*Error
+	*Comm
 }
 
 type SmsTemplateRemoveRequest struct {
@@ -49,7 +49,7 @@ func (a SmsTemplateRemoveRequest) Validate() error {
 }
 
 type SmsTemplateRemoveResponse struct {
-	*Error
+	*Comm
 }
 
 type SmsTemplateRequest struct {
@@ -66,7 +66,7 @@ func (a SmsTemplateRequest) Validate() error {
 
 type SmsTemplateResponse struct {
 	TID int64 `json:"tid,omitempty"`
-	*Error
+	*Comm
 }
 
 type SmsTemplateUpdateRequest struct {

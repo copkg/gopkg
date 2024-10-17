@@ -29,7 +29,7 @@ type UserListRequest struct {
 
 type UserListResponse struct {
 	Users []*User `json:"users"`
-	Error
+	Comm
 }
 
 type UserRequest struct {
@@ -37,8 +37,9 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-	User *User `json:"user"`
-	Error
+	User *User  `json:"user"`
+	Code int    `json:"code"`
+	Msg  string `json:"msg,omitempty"`
 }
 
 func (a UserRequest) Validate() error {
@@ -52,7 +53,7 @@ type SnsLoginRequest struct {
 	Code string `json:"code"`
 }
 type SnsLoginResponse struct {
-	Error
+	Comm
 	Token string `json:"token,omitempty"`
 	Exp   int64  `json:"exp,omitempty"`
 }

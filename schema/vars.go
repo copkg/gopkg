@@ -1,18 +1,10 @@
 package schema
 
-import (
-	"database/sql"
-)
-
-var ErrNotFound = sql.ErrNoRows
-
-type Error struct {
-	StatusCode int    `json:"-"`
-	Code       int    `json:"code"`
-	Msg        string `json:"msg,omitempty"`
-	Err        error  `json:"err,omitempty"`
+type Comm struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg,omitempty"`
 }
 
-func (e Error) Error() string {
+func (e Comm) GetMessage() string {
 	return e.Msg
 }
