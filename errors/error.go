@@ -20,7 +20,6 @@ const (
 	ErrExpired
 	ErrInvalidAuthHeader
 	ErrMissingHeader
-	ErrorExpired
 	ErrPasswordIncorrect
 	ErrPermissionDenied
 	ErrEncodingFailed
@@ -33,6 +32,7 @@ const (
 	ErrDecodingYaml
 	ErrInitWeComSDK
 	ErrThirdAPI
+	ErrAPPDisabled
 )
 
 // Error 描述错误结构体
@@ -82,4 +82,5 @@ var (
 	ErrEncodingYamlError      = New(ErrEncodingYaml, "Yaml data could not be encoded")
 	ErrDecodingYamlError      = New(ErrDecodingYaml, "Yaml data could not be decoded")
 	ErrInitWeComSDKError      = New(ErrInitWeComSDK, "init wecom SDK fail")
+	ErrAPPDisabledError       = New(ErrAPPDisabled, "the applicatin disabled")
 )
