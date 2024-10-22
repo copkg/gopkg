@@ -16,9 +16,13 @@ type JWT struct {
 	SigningMethod string
 }
 type CustomClaims struct {
-	StaffNo string `json:"staff_no,omitempty"`
-	Name    string `json:"name,omitempty"`
-	AppID   int    `json:"app_id,omitempty"`
+	StaffNo        string `json:"staff_no,omitempty"`
+	Name           string `json:"name,omitempty"`
+	AppID          int    `json:"app_id,omitempty"`
+	UserID         string `json:"user_id,omitempty"`
+	ExternalUserID string `json:"external_user_id,omitempty"`
+	Avatar         string `json:"avatar,omitempty"`
+	Type           int8   `json:"type,omitempty"`
 	jwt.RegisteredClaims
 }
 
