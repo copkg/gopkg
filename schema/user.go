@@ -64,3 +64,28 @@ func (a SnsLoginRequest) Validate() error {
 		validation.Field(&a.Code, validation.Required.Error("code不能为空")),
 	)
 }
+
+type UserUpdateRequest struct {
+	UID         int64  `json:"uid"`
+	Name        string `json:"name"`
+	Avatar      string `json:"avatar"`      // 头像
+	Gender      int8   `json:"gender"`      // 性别 0-未知 1-男性 2-女性
+	Remark      string `json:"remark"`      // 备注
+	Description string `json:"description"` // 描述
+	Mobile      string `json:"mobile"`      // 手机号码
+	Email       string `json:"email"`       // email
+	BizMail     string `json:"biz_mail"`    // 企业邮箱
+	Address     string `json:"address"`     // address
+	StaffNo     string `json:"staff_no"`    // 内部员工工号
+}
+
+type UserUpdateResponse struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg,omitempty"`
+}
+
+func (a UserUpdateRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.UID, validation.Required.Error("uid不能为空")),
+	)
+}
