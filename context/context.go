@@ -1,9 +1,9 @@
 package context
 
 import (
-	"github.com/copkg/gopkg/schema"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/pkg/errors"
 	"net/http"
 	"time"
 )
@@ -52,11 +52,7 @@ func (ctx *Context) Success(data interface{}) {
 func (ctx *Context) Bind(data interface{}) error {
 	err := ctx.ShouldBind(data)
 	if err != nil {
-		return &schema.Error{
-			Code: http.StatusBadRequest,
-			Msg:  "请求数据解析错误",
-			Err:  err,
-		}
+		return errors.New("请求数据解析错误")
 	}
 	return err
 }
@@ -66,18 +62,6 @@ func (ctx *Context) Error(err error) {
 		"code": http.StatusBadRequest,
 		"msg":  err.Error(),
 		"time": time.Now().Unix(),
-	}
-	if e, ok := err.(*schema.Error); ok {
-		ret["code"] = e.Code
-		ret["msg"] = e.Msg
-		ret["err"] = e.Err.Error()
-		statusCode = e.StatusCode
-	}
-	if e, ok := err.(schema.Error); ok {
-		ret["code"] = e.Code
-		ret["msg"] = e.Msg
-		ret["err"] = e.Err.Error()
-		statusCode = e.StatusCode
 	}
 	if e, ok := err.(validation.InternalError); ok {
 		ret["code"] = http.StatusInternalServerError
