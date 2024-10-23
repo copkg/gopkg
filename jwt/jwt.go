@@ -16,6 +16,7 @@ type JWT struct {
 	SigningMethod string
 }
 type CustomClaims struct {
+	UID            uint   `json:"uid"`
 	StaffNo        string `json:"staff_no,omitempty"`
 	Name           string `json:"name,omitempty"`
 	AppID          int    `json:"app_id,omitempty"`
