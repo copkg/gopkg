@@ -34,6 +34,7 @@ const (
 	ErrThirdAPI
 	ErrAPPDisabled
 	ErrOAuthScope
+	NotSupportedOAuth
 )
 
 // Error 描述错误结构体
@@ -85,4 +86,5 @@ var (
 	ErrInitWeComSDKError      = New(ErrInitWeComSDK, "init wecom SDK fail")
 	ErrAPPDisabledError       = New(ErrAPPDisabled, "the applicatin disabled")
 	ErrOAuthScopeError        = New(ErrAPPDisabled, "oauth2.0 scope error,only supporte snsapi_privateinfo")
+	ErrNotSupportedOAuthError = New(NotSupportedOAuth, "not supported oauth2.0 scope error,only supporte official_account，wecom")
 )
