@@ -49,8 +49,10 @@ func (a UserRequest) Validate() error {
 }
 
 type SnsLoginRequest struct {
-	AID  int    `json:"aid"`
-	Code string `json:"code"`
+	AID    int    `json:"aid"`
+	Code   string `json:"code"`
+	Name   string `json:"name"`
+	Mobile string `json:"mobile"` // 手机号码
 }
 type SnsLoginResponse struct {
 	Comm
@@ -61,7 +63,9 @@ type SnsLoginResponse struct {
 func (a SnsLoginRequest) Validate() error {
 	return validation.ValidateStruct(&a,
 		validation.Field(&a.AID, validation.Required.Error("应用id不能为空")),
-		validation.Field(&a.Code, validation.Required.Error("code不能为空")),
+		validation.Field(&a.Code, validation.When(a.Name == "", validation.Required.Error("code不能为空"))),
+		validation.Field(&a.Name, validation.When(a.Code == "", validation.Required.Error("姓名不能为空"))),
+		validation.Field(&a.Mobile, validation.When(a.Code == "", validation.Required.Error("手机号不能为空"))),
 	)
 }
 
@@ -86,6 +90,6 @@ type UserUpdateResponse struct {
 
 func (a UserUpdateRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.UID, validation.Required.Error("uid不能为空")),
+		validation.Field(&a.UID, validation.Required.Error("参数不能为空")),
 	)
 }

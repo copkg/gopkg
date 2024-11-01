@@ -19,6 +19,7 @@ type CustomClaims struct {
 	UID            uint   `json:"uid"`
 	StaffNo        string `json:"staff_no,omitempty"`
 	Name           string `json:"name,omitempty"`
+	Mobile         string `json:"mobile,omitempty"`
 	AppID          int    `json:"app_id,omitempty"`
 	UserID         string `json:"user_id,omitempty"`
 	ExternalUserID string `json:"external_user_id,omitempty"`
