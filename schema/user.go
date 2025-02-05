@@ -49,12 +49,12 @@ type AccessTokenRequest struct {
 
 func (a AccessTokenRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.Token, validation.Required.Error("token不能为空")),
+		validation.Field(&a.Token, validation.Required.Error("token不能为空"), validation.By(checkJWTToken)),
 	)
 }
 func (a UserRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.UID, validation.Required.Error("uid不能为空"), validation.By(checkJWTToken)),
+		validation.Field(&a.UID, validation.Required.Error("uid不能为空")),
 	)
 }
 
