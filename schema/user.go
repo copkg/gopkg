@@ -1,7 +1,9 @@
 package schema
 
 import (
+	"errors"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"strings"
 	"time"
 )
 
@@ -41,11 +43,28 @@ type UserResponse struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg,omitempty"`
 }
+type AccessTokenRequest struct {
+	Token string `json:"token"`
+}
 
+func (a AccessTokenRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Token, validation.Required.Error("token不能为空")),
+	)
+}
 func (a UserRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.UID, validation.Required.Error("uid不能为空")),
+		validation.Field(&a.UID, validation.Required.Error("uid不能为空"), validation.By(checkJWTToken)),
 	)
+}
+
+func checkJWTToken(value interface{}) error {
+	token, _ := value.(string)
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		return errors.New("invalid token format")
+	}
+	return nil
 }
 
 type SnsLoginRequest struct {
