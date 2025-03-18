@@ -6,7 +6,7 @@ type ErrorCode int
 
 const (
 	ErrNotFound ErrorCode = iota + 110001
-	ErrUserAlreadyExist
+	ErrAlreadyExist
 	ErrReachMaxCount
 	ErrSecretNotFound
 	ErrSuccess
@@ -35,6 +35,7 @@ const (
 	ErrAPPDisabled
 	ErrOAuthScope
 	NotSupportedOAuth
+	ErrFileFailed
 )
 
 // Error 描述错误结构体
@@ -59,7 +60,7 @@ func New(code ErrorCode, message string) Error {
 // 定义常见的错误
 var (
 	ErrNotFoundError          = New(ErrNotFound, "Resource not found")
-	ErrUserAlreadyExistError  = New(ErrUserAlreadyExist, "User already exist")
+	ErrAlreadyExistError      = New(ErrAlreadyExist, "already exist")
 	ErrReachMaxCountError     = New(ErrReachMaxCount, "Secret reach the max count")
 	ErrSecretNotFoundError    = New(ErrSecretNotFound, "Secret not found")
 	ErrSuccessError           = New(ErrSuccess, "OK")
@@ -87,4 +88,5 @@ var (
 	ErrAPPDisabledError       = New(ErrAPPDisabled, "the applicatin disabled")
 	ErrOAuthScopeError        = New(ErrAPPDisabled, "oauth2.0 scope error,only supporte snsapi_privateinfo")
 	ErrNotSupportedOAuthError = New(NotSupportedOAuth, "not supported oauth2.0 scope error,only supporte official_account，wecom")
+	ErrFileError              = New(ErrFileFailed, "read file error")
 )

@@ -15,6 +15,7 @@ type JWT struct {
 	ExpiresTime   int64
 	SigningMethod string
 }
+
 type CustomClaims struct {
 	UID     uint   `json:"uid"`
 	StaffNo string `json:"staff_no,omitempty"`

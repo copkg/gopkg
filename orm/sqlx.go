@@ -28,8 +28,8 @@ func NewSqlx(c *SqlxConf) *sqlx.DB {
 	if err = db.Ping(); err != nil {
 		panic(fmt.Sprintf("db ping err: %s", err.Error()))
 	}
-	db.SetMaxIdleConns(100)
-	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(c.MaxIdleConns)
+	db.SetMaxOpenConns(c.MaxOpenConns)
 	db.SetConnMaxLifetime(time.Duration(c.MaxLifeTime) * time.Second)
 	fmt.Println("db connect success......")
 	return db
