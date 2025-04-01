@@ -1,5 +1,7 @@
 package schema
 
+import "github.com/copkg/gopkg/errors"
+
 type ApplicationRequest struct {
 	AppID   string `json:"app_id"`
 	AppName string `json:"app_name"`
@@ -19,7 +21,7 @@ type Application struct {
 }
 type ApplicationResponse struct {
 	Applicatin *Application `json:"applicatin"`
-	*Comm
+	*errors.Error
 }
 
 type ApplicationListRequest struct {
@@ -27,5 +29,5 @@ type ApplicationListRequest struct {
 
 type ApplicationListResponse struct {
 	Applications []*Application `json:"applications"`
-	*Comm
+	*errors.Error
 }

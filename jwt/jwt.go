@@ -21,6 +21,8 @@ type CustomClaims struct {
 	StaffNo string `json:"staff_no,omitempty"`
 	AppID   int    `json:"app_id,omitempty"`
 	UserID  string `json:"user_id,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Avatar  string `json:"avatar,omitempty"`
 	jwt.RegisteredClaims
 }
 
@@ -38,7 +40,7 @@ func (j *JWT) CreateClaims() CustomClaims {
 }
 
 // 创建一个token
-func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
+func (j *JWT) CreateToken(claims jwt.Claims) (string, error) {
 	var signingMethod jwt.SigningMethod
 	switch j.SigningMethod {
 	case "HS256":

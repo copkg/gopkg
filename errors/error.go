@@ -40,8 +40,8 @@ const (
 
 // Error 描述错误结构体
 type Error struct {
-	Code ErrorCode `json:"code"`
-	Msg  string    `json:"msg"`
+	Code ErrorCode `json:"code,omitempty"`
+	Msg  string    `json:"msg,omitempty"`
 	Err  error     `json:"-"`
 }
 

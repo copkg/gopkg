@@ -1,13 +1,15 @@
 package schema
 
 import (
-	"errors"
+	"github.com/copkg/gopkg/errors"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"net/http"
 	"strings"
 	"time"
 )
 
 type User struct {
+	ID             uint       `json:"uid"`              // 企微用户id/公众号openid
 	UserID         string     `json:"user_id"`          // 企微用户id/公众号openid
 	AppID          string     `json:"app_id"`           // 所属应用
 	ExternalUserID string     `json:"external_user_id"` // 外部/内部联系人的userid
@@ -17,7 +19,7 @@ type User struct {
 	Gender         int8       `json:"gender"`           // 性别 0-未知 1-男性 2-女性
 	Remark         string     `json:"remark"`           // 备注
 	Description    string     `json:"description"`      // 描述
-	Mobile         string     `json:"mobile"`           // 手机号码
+	Mobile         string     `json:"-"`                // 手机号码
 	Email          string     `json:"email"`            // email
 	BizMail        string     `json:"biz_mail"`         // 企业邮箱
 	Address        string     `json:"address"`          // address
@@ -31,7 +33,7 @@ type UserListRequest struct {
 
 type UserListResponse struct {
 	Users []*User `json:"users"`
-	Comm
+	*errors.Error
 }
 
 type UserRequest struct {
@@ -39,9 +41,8 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-	User *User  `json:"user"`
-	Code int    `json:"code"`
-	Msg  string `json:"msg,omitempty"`
+	User *User `json:"user"`
+	*errors.Error
 }
 type AccessTokenRequest struct {
 	Token string `json:"token"`
@@ -62,7 +63,7 @@ func checkJWTToken(value interface{}) error {
 	token, _ := value.(string)
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
-		return errors.New("invalid token format")
+		return errors.New(http.StatusBadRequest, "Token invalid", nil)
 	}
 	return nil
 }
@@ -74,9 +75,10 @@ type SnsLoginRequest struct {
 	Mobile string `json:"mobile"` // 手机号码
 }
 type SnsLoginResponse struct {
-	Comm
+	*errors.Error
 	Token string `json:"token,omitempty"`
 	Exp   int64  `json:"exp,omitempty"`
+	User  *User  `json:"user,omitempty"`
 }
 
 func (a SnsLoginRequest) Validate() error {
@@ -103,12 +105,28 @@ type UserUpdateRequest struct {
 }
 
 type UserUpdateResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg,omitempty"`
+	*errors.Error
 }
 
 func (a UserUpdateRequest) Validate() error {
 	return validation.ValidateStruct(&a,
 		validation.Field(&a.UID, validation.Required.Error("参数不能为空")),
 	)
+}
+
+type UpdatePhoneRequest struct {
+	Mobile string `json:"mobile"`
+	Code   string `json:"code"`
+	Uid    int    `json:"-"`
+}
+
+func (a UpdatePhoneRequest) Validate() error {
+	return validation.ValidateStruct(&a,
+		validation.Field(&a.Mobile, validation.Required),
+		validation.Field(&a.Code, validation.Required),
+	)
+}
+
+type UpdatePhoneResponse struct {
+	*errors.Error
 }

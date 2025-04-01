@@ -1,5 +1,7 @@
 package schema
 
+import "github.com/copkg/gopkg/errors"
+
 type SmsLog struct {
 	SendID        int64  `json:"send_id"`        // 主键ID
 	TaskID        int64  `json:"task_id"`        // 任务ID
@@ -19,7 +21,7 @@ type SmsLogListResponse struct {
 	Total int       `json:"total"`
 	Page  int       `json:"page,omitempty"`
 	Size  int       `json:"size,omitempty"`
-	*Comm
+	*errors.Error
 }
 
 type SmsLogRequest struct {

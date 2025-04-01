@@ -1,24 +1,24 @@
 package schema
 
 import (
+	"github.com/copkg/gopkg/errors"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type SendSmsRequest struct {
-	TID     int64       `json:"tid"`
-	Mobiles []string    `json:"mobiles"`
+	Mobile  string      `json:"mobile"`
+	Content string      `json:"content"`
 	Cond    interface{} `json:"cond"`
 }
 
 func (a SendSmsRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.TID, validation.Required.Error("模板id不能为空")),
-		validation.Field(&a.Mobiles, validation.Required.Error("不能为空")),
+		validation.Field(&a.Mobile, validation.Required.Error("不能为空")),
 	)
 }
 
 type SendSmsResponse struct {
-	*Comm
+	*errors.Error
 	TaskID int64 `json:"task_id"`
 }
 
@@ -35,7 +35,7 @@ type SmsTemplateListRequest struct {
 
 type SmsTemplateListResponse struct {
 	Templates []*SmsTemplate `json:"templates"`
-	*Comm
+	*errors.Error
 }
 
 type SmsTemplateRemoveRequest struct {
@@ -49,7 +49,7 @@ func (a SmsTemplateRemoveRequest) Validate() error {
 }
 
 type SmsTemplateRemoveResponse struct {
-	*Comm
+	*errors.Error
 }
 
 type SmsTemplateRequest struct {
@@ -66,7 +66,7 @@ func (a SmsTemplateRequest) Validate() error {
 
 type SmsTemplateResponse struct {
 	TID int64 `json:"tid,omitempty"`
-	*Comm
+	*errors.Error
 }
 
 type SmsTemplateUpdateRequest struct {

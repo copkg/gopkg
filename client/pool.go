@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/copkg/gopkg/config"
 	"github.com/copkg/gopkg/logger"
-	"github.com/copkg/gopkg/schema"
 	etcd_client "github.com/rpcxio/rpcx-etcd/client"
 	"github.com/smallnest/rpcx/client"
 	"github.com/smallnest/rpcx/share"
@@ -35,17 +34,11 @@ func Call(serviceName, serviceMethod string, req, res interface{}) error {
 	cli := Get(serviceName)
 	if cli == nil {
 		log.Printf("创建rpc连接失败")
-		return &schema.Error{
-			Code: 500,
-			Err:  errors.New("rpc服务连接失败"),
-		}
+		return errors.New("创建rpc连接失败")
 	}
 	if err := cli.Call(context.Background(), serviceMethod, req, res); err != nil {
 		log.Printf("call rpc service err:%s", err.Error())
-		return &schema.Error{
-			Code: 500,
-			Err:  err,
-		}
+		return err
 	}
 	return nil
 }
@@ -53,17 +46,11 @@ func CallWithContext(ctx context.Context, serviceName, serviceMethod string, req
 	cli := Get(serviceName)
 	if cli == nil {
 		log.Printf("创建rpc连接失败")
-		return &schema.Error{
-			Code: 500,
-			Err:  errors.New("rpc服务连接失败"),
-		}
+		return errors.New("rpc服务连接失败")
 	}
 	if err := cli.Call(ctx, serviceMethod, req, res); err != nil {
 		logger.Errorf("call rpc service err:%s-%s,err:", serviceName, serviceMethod, err.Error())
-		return &schema.Error{
-			Code: 500,
-			Err:  err,
-		}
+		return err
 	}
 	return nil
 }

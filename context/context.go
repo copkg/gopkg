@@ -40,7 +40,7 @@ func (ctx *Context) GetUserValue(key string) interface{} {
 }
 func (ctx *Context) Success(data interface{}) {
 	ret := gin.H{
-		"code": 0,
+		"code": http.StatusOK,
 		"msg":  "success",
 		"time": time.Now().Unix(),
 	}
