@@ -37,7 +37,7 @@ type UserListResponse struct {
 }
 
 type UserRequest struct {
-	UID int64 `json:"uid"`
+	UID int `json:"uid"`
 }
 
 type UserResponse struct {
