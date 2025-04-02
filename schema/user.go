@@ -78,8 +78,7 @@ type SnsLoginResponse struct {
 	*errors.Error
 	Token string `json:"token,omitempty"`
 	Exp   int64  `json:"exp,omitempty"`
-	User  *User  `json:"user,omitempty"`
-	Code  int    `json:"-"`
+	Code  int    `json:"code"`
 }
 
 func (a SnsLoginRequest) Validate() error {
