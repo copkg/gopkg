@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	ID             uint       `json:"uid"`                        // 企微用户id/公众号openid
-	UserID         string     `json:"user_id"`                    // 企微用户id/公众号openid
+	UserID         string     `json:"user_id,omitempty"`          // 企微用户id/公众号openid
 	AppID          string     `json:"app_id,omitempty"`           // 所属应用
 	ExternalUserID string     `json:"external_user_id,omitempty"` // 外部/内部联系人的userid
 	Name           string     `json:"name"`                       // 名称
@@ -19,11 +19,11 @@ type User struct {
 	Gender         int8       `json:"gender,omitempty"`           // 性别 0-未知 1-男性 2-女性
 	Remark         string     `json:"remark,omitempty"`           // 备注
 	Description    string     `json:"description,omitempty"`      // 描述
-	Mobile         string     `json:"-"`                          // 手机号码
+	Mobile         string     `json:"mobile"`                     // 手机号码
 	Email          string     `json:"email,omitempty"`            // email
 	BizMail        string     `json:"biz_mail,omitempty"`         // 企业邮箱
 	Address        string     `json:"address,omitempty"`          // address
-	StaffNo        string     `json:"staff_no"`                   // 内部员工工号
+	StaffNo        string     `json:"staff_no,omitempty"`         // 内部员工工号
 	LastLoginAt    *time.Time `json:"last_login_at,omitempty"`    // 最后登录时间
 	LastLoginIP    string     `json:"last_login_ip,omitempty"`    // 最后登录ip
 	QRCode         string     `json:"qr_code,omitempty"`          // 员工个人二维码（扫描可添加为外部联系人），仅在用户同意snsapi_privateinfo授权时返回
@@ -110,7 +110,7 @@ type UserUpdateResponse struct {
 
 func (a UserUpdateRequest) Validate() error {
 	return validation.ValidateStruct(&a,
-		validation.Field(&a.UID, validation.Required.Error("参数不能为空")),
+		validation.Field(&a.UID, validation.Required),
 	)
 }
 
