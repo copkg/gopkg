@@ -9,7 +9,8 @@ import (
 )
 
 type User struct {
-	ID             uint       `json:"uid"`                        // 企微用户id/公众号openid
+	ID             uint       `json:"uid"` // 企微用户id/公众号openid
+	Mobile         string     `json:"mobile,omitempty"`
 	UserID         string     `json:"user_id,omitempty"`          // 企微用户id/公众号openid
 	AppID          string     `json:"app_id,omitempty"`           // 所属应用
 	ExternalUserID string     `json:"external_user_id,omitempty"` // 外部/内部联系人的userid
@@ -19,7 +20,6 @@ type User struct {
 	Gender         int8       `json:"gender,omitempty"`           // 性别 0-未知 1-男性 2-女性
 	Remark         string     `json:"remark,omitempty"`           // 备注
 	Description    string     `json:"description,omitempty"`      // 描述
-	Mobile         string     `json:"mobile,omitempty"`           // 手机号码
 	Email          string     `json:"email,omitempty"`            // email
 	BizMail        string     `json:"biz_mail,omitempty"`         // 企业邮箱
 	Address        string     `json:"address,omitempty"`          // address
@@ -79,7 +79,7 @@ type SnsLoginResponse struct {
 	Token string `json:"token,omitempty"`
 	Exp   int64  `json:"exp,omitempty"`
 	User  *User  `json:"user,omitempty"`
-	Code  int
+	Code  int    `json:"-"`
 }
 
 func (a SnsLoginRequest) Validate() error {
