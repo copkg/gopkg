@@ -23,6 +23,7 @@ type CustomClaims struct {
 	UserID  string `json:"user_id,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Avatar  string `json:"avatar,omitempty"`
+	Type    int8   `json:"type,omitempty"`
 	jwt.RegisteredClaims
 }
 
