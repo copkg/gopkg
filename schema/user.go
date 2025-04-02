@@ -19,7 +19,7 @@ type User struct {
 	Gender         int8       `json:"gender,omitempty"`           // 性别 0-未知 1-男性 2-女性
 	Remark         string     `json:"remark,omitempty"`           // 备注
 	Description    string     `json:"description,omitempty"`      // 描述
-	Mobile         string     `json:"mobile"`                     // 手机号码
+	Mobile         string     `json:"mobile,omitempty"`           // 手机号码
 	Email          string     `json:"email,omitempty"`            // email
 	BizMail        string     `json:"biz_mail,omitempty"`         // 企业邮箱
 	Address        string     `json:"address,omitempty"`          // address
