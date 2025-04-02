@@ -1,7 +1,5 @@
 package errors
 
-import "fmt"
-
 type ErrorCode int
 
 const (
@@ -47,7 +45,13 @@ type Error struct {
 
 // Error 实现 error 接口
 func (e Error) Error() string {
-	return fmt.Sprintf(`{"code": %d, "msg": "%s"}`, e.Code, e.Msg)
+	return e.Msg
+}
+func (e Error) Wrap() error {
+	return e.Err
+}
+func (e Error) HttpCode() ErrorCode {
+	return e.Code
 }
 
 // New 创建一个新的错误实例

@@ -1,9 +1,9 @@
 package context
 
 import (
+	"github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/pkg/errors"
 	"net/http"
 	"time"
 )
@@ -52,7 +52,7 @@ func (ctx *Context) Success(data interface{}) {
 func (ctx *Context) Bind(data interface{}) error {
 	err := ctx.ShouldBind(data)
 	if err != nil {
-		return errors.New("请求数据解析错误")
+		return errors.New(400, "请求数据解析错误", err)
 	}
 	return err
 }
@@ -73,6 +73,12 @@ func (ctx *Context) Error(err error) {
 		ret["code"] = http.StatusUnprocessableEntity
 		ret["msg"] = "数据验证不通过"
 		ret["err"] = e.Error()
+		statusCode = http.StatusUnprocessableEntity
+	}
+	if e, ok := err.(errors.Error); ok {
+		ret["code"] = e.HttpCode()
+		ret["msg"] = err.Error()
+		ret["err"] = e.Wrap()
 		statusCode = http.StatusUnprocessableEntity
 	}
 	ctx.JSON(statusCode, ret)

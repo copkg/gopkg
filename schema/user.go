@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	ID             uint       `json:"uid"` // 企微用户id/公众号openid
-	Mobile         string     `json:"mobile,omitempty"`
+	Mobile         string     `json:"mobile"`
 	UserID         string     `json:"user_id,omitempty"`          // 企微用户id/公众号openid
 	AppID          string     `json:"app_id,omitempty"`           // 所属应用
 	ExternalUserID string     `json:"external_user_id,omitempty"` // 外部/内部联系人的userid
