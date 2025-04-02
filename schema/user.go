@@ -16,7 +16,7 @@ type User struct {
 	ExternalUserID string     `json:"external_user_id,omitempty"` // 外部/内部联系人的userid
 	Name           string     `json:"name"`                       // 名称
 	Avatar         string     `json:"avatar,omitempty"`           // 头像
-	Type           int8       `json:"-"`                          // 人的类型，1外部微信用户，2企业微信内部用户
+	Type           int8       `json:"type"`                       // 人的类型，1外部微信用户，2企业微信内部用户
 	Gender         int8       `json:"gender,omitempty"`           // 性别 0-未知 1-男性 2-女性
 	Remark         string     `json:"remark,omitempty"`           // 备注
 	Description    string     `json:"description,omitempty"`      // 描述
