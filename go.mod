@@ -5,15 +5,16 @@ go 1.21.4
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
-	github.com/go-playground/validator/v10 v10.22.0
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/hibiken/asynq v0.24.1
 	github.com/iwanbk/gobeanstalk v0.0.0-20160903043409-dbbb23937c31
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/json-iterator/go v1.1.12
 	github.com/pkg/errors v0.9.1
+	github.com/qiniu/go-sdk/v7 v7.25.3
+	github.com/redis/go-redis/v9 v9.0.3
 	github.com/rpcxio/rpcx-etcd v0.3.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smallnest/rpcx v1.8.31
@@ -24,6 +25,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/apache/thrift v0.20.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
@@ -46,10 +48,10 @@ require (
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/pprof v0.0.0-20240430035430-e4905b036c4e // indirect
@@ -75,7 +77,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/quic-go/quic-go v0.43.1 // indirect
-	github.com/redis/go-redis/v9 v9.0.3 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rpcxio/libkv v0.5.1 // indirect
 	github.com/rubyist/circuitbreaker v2.2.1+incompatible // indirect
