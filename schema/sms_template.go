@@ -9,6 +9,7 @@ type SendSmsRequest struct {
 	Mobile  string      `json:"mobile"`
 	Content string      `json:"content"`
 	Cond    interface{} `json:"cond"`
+	UID     int
 }
 
 func (a SendSmsRequest) Validate() error {

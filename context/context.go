@@ -1,7 +1,7 @@
 package context
 
 import (
-	"github.com/copkg/gopkg/errors"
+	errors "github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"net/http"
@@ -22,7 +22,6 @@ type HandlerFunc func(c *Context)
 func HandleFunc(handler HandlerFunc) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		c := new(Context)
-		c.SetUserValue(ClientIPCtx{}, ctx.ClientIP())
 		c.Context = ctx
 		handler(c)
 	}
@@ -40,9 +39,9 @@ func (ctx *Context) GetUserValue(key string) interface{} {
 }
 func (ctx *Context) Success(data interface{}) {
 	ret := gin.H{
-		"code": http.StatusOK,
-		"msg":  "success",
-		"time": time.Now().Unix(),
+		"code":    http.StatusOK,
+		"message": "success",
+		"time":    time.Now().Unix(),
 	}
 	if data != nil {
 		ret["data"] = &data
@@ -50,34 +49,30 @@ func (ctx *Context) Success(data interface{}) {
 	ctx.JSON(http.StatusOK, ret)
 }
 func (ctx *Context) Bind(data interface{}) error {
-	err := ctx.ShouldBind(data)
-	if err != nil {
-		return errors.New(400, "请求数据解析错误", err)
-	}
-	return err
+	return ctx.ShouldBind(data)
 }
 func (ctx *Context) Error(err error) {
 	statusCode := http.StatusBadRequest
 	ret := gin.H{
-		"code": http.StatusBadRequest,
-		"msg":  err.Error(),
-		"time": time.Now().Unix(),
+		"code":    http.StatusBadRequest,
+		"message": err.Error(),
+		"time":    time.Now().Unix(),
 	}
 	if e, ok := err.(validation.InternalError); ok {
 		ret["code"] = http.StatusInternalServerError
-		ret["msg"] = "数据验证不通过"
+		ret["message"] = "数据验证不通过"
 		ret["err"] = e.Error()
 		statusCode = http.StatusInternalServerError
 	}
 	if e, ok := err.(validation.Errors); ok {
 		ret["code"] = http.StatusUnprocessableEntity
-		ret["msg"] = "数据验证不通过"
+		ret["message"] = "数据验证不通过"
 		ret["err"] = e.Error()
 		statusCode = http.StatusUnprocessableEntity
 	}
 	if e, ok := err.(errors.Error); ok {
 		ret["code"] = e.HttpCode()
-		ret["msg"] = err.Error()
+		ret["message"] = err.Error()
 		ret["err"] = e.Wrap()
 		statusCode = http.StatusUnprocessableEntity
 	}

@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-func User() gin.HandlerFunc {
+func Header() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headers := c.Request.Header
 		for k, _ := range headers {
-			if strings.HasPrefix(k, "X-Jwt-Claim") || strings.HasPrefix(k, "x-jwt-claim") {
+			if strings.HasPrefix(strings.ToLower(k), "x-jwt-claim") {
 				c.Set(strings.ToLower(k), c.GetHeader(k))
 			}
 		}
