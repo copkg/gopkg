@@ -5,6 +5,7 @@ import (
 )
 
 var RedisClient *redis.Client
+var Nil = redis.Nil
 
 type RedisConf struct {
 	Host     string

@@ -10,9 +10,9 @@ import (
 func NoMethodHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusMethodNotAllowed, gin.H{
-			"code": http.StatusMethodNotAllowed,
-			"msg":  http.StatusText(http.StatusMethodNotAllowed),
-			"time": time.Now().Unix(),
+			"code":    http.StatusMethodNotAllowed,
+			"message": http.StatusText(http.StatusMethodNotAllowed),
+			"time":    time.Now().Unix(),
 		})
 	}
 }
@@ -21,9 +21,9 @@ func NoMethodHandler() gin.HandlerFunc {
 func NoRouteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
-			"code": http.StatusNotFound,
-			"msg":  http.StatusText(http.StatusNotFound),
-			"time": time.Now().Unix(),
+			"code":    http.StatusNotFound,
+			"message": http.StatusText(http.StatusNotFound),
+			"time":    time.Now().Unix(),
 		})
 	}
 }

@@ -1,11 +1,15 @@
 package context
 
 import (
+	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
 	errors "github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"net/http"
-	"time"
+	"github.com/go-playground/validator/v10"
 )
 
 // 定义全局上下文中的键
@@ -68,6 +72,17 @@ func (ctx *Context) Error(err error) {
 		ret["code"] = http.StatusUnprocessableEntity
 		ret["message"] = "数据验证不通过"
 		ret["err"] = e.Error()
+		statusCode = http.StatusUnprocessableEntity
+	}
+	if _, ok := err.(validator.ValidationErrors); ok {
+		var errmsg []string
+		for _, ferr := range err.(validator.ValidationErrors) {
+			errmsg = append(errmsg, fmt.Sprintf("param %s %s", strings.ToLower(ferr.Field()), ferr.Tag()))
+		}
+		// 将字符串数组包装在一个map中以输出JSON格式
+		ret["code"] = http.StatusUnprocessableEntity
+		ret["message"] = "数据验证不通过"
+		ret["err"] = errmsg
 		statusCode = http.StatusUnprocessableEntity
 	}
 	if e, ok := err.(errors.Error); ok {
