@@ -2,14 +2,14 @@ package context
 
 import (
 	"fmt"
-	"net/http"
-	"strings"
-	"time"
-
-	errors "github.com/copkg/gopkg/errors"
+	"github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-playground/validator/v10"
+	"github.com/go-sql-driver/mysql"
+	"net/http"
+	"strings"
+	"time"
 )
 
 // 定义全局上下文中的键
@@ -45,7 +45,7 @@ func (ctx *Context) Success(data interface{}) {
 	ret := gin.H{
 		"code":    http.StatusOK,
 		"message": "success",
-		"time":    time.Now().Unix(),
+		"time":    time.Now(),
 	}
 	if data != nil {
 		ret["data"] = &data
@@ -60,7 +60,7 @@ func (ctx *Context) Error(err error) {
 	ret := gin.H{
 		"code":    http.StatusBadRequest,
 		"message": err.Error(),
-		"time":    time.Now().Unix(),
+		"time":    time.Now(),
 	}
 	if e, ok := err.(validation.InternalError); ok {
 		ret["code"] = http.StatusInternalServerError
@@ -73,6 +73,12 @@ func (ctx *Context) Error(err error) {
 		ret["message"] = "数据验证不通过"
 		ret["err"] = e.Error()
 		statusCode = http.StatusUnprocessableEntity
+	}
+	if e, ok := err.(*mysql.MySQLError); ok {
+		ret["code"] = http.StatusInternalServerError
+		ret["message"] = "服务异常"
+		ret["err"] = e.Error()
+		statusCode = http.StatusInternalServerError
 	}
 	if _, ok := err.(validator.ValidationErrors); ok {
 		var errmsg []string

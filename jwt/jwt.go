@@ -11,14 +11,19 @@ var (
 	TokenInvalid = errors.New("token invalid")
 )
 
-type JWT struct {
+type JWTConf struct {
 	SigningKey    string
 	ExpiresTime   int64
 	SigningMethod string
+	Issuer        string
 }
+
+var JWT *JWTConf
 
 type CustomClaims struct {
 	UID     uint   `json:"uid"`
+	ID      int64  `json:"id"`
+	Role    string `json:"role,omitempty"`
 	StaffNo string `json:"staff_no,omitempty"`
 	AppID   int    `json:"app_id,omitempty"`
 	UserID  string `json:"user_id,omitempty"`
@@ -28,21 +33,20 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func NewJWT(c JWT) *JWT {
-	return &JWT{
+func NewJWT(c *JWTConf) *JWTConf {
+	return &JWTConf{
 		SigningKey:    c.SigningKey,
 		ExpiresTime:   c.ExpiresTime,
 		SigningMethod: c.SigningMethod,
 	}
 }
 
-func (j *JWT) CreateClaims() CustomClaims {
-	var claims = CustomClaims{}
+func (j *JWTConf) CreateClaims(claims CustomClaims) CustomClaims {
 	return claims
 }
 
 // 创建一个token
-func (j *JWT) CreateToken(claims jwt.Claims) (string, error) {
+func (j *JWTConf) CreateToken(claims jwt.Claims) (string, error) {
 	var signingMethod jwt.SigningMethod
 	switch j.SigningMethod {
 	case "HS256":
@@ -57,7 +61,7 @@ func (j *JWT) CreateToken(claims jwt.Claims) (string, error) {
 }
 
 // 解析 token
-func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
+func (j *JWTConf) ParseToken(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
 		return []byte(j.SigningKey), nil
 	}, jwt.WithLeeway(5*time.Second))
