@@ -1,20 +1,27 @@
 package context
 
 import (
+	"context"
 	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
-	"net/http"
-	"strings"
-	"time"
 )
 
 // 定义全局上下文中的键
 type (
-	ClientIPCtx struct{}
+	ClientIPCtx  struct{}
+	transCtx     struct{}
+	noTransCtx   struct{}
+	transLockCtx struct{}
+	userIDCtx    struct{}
+	tokenCtx     struct{}
 )
 
 type Context struct {
@@ -31,6 +38,38 @@ func HandleFunc(handler HandlerFunc) gin.HandlerFunc {
 	}
 }
 
+// NewTrans 创建事务的上下文
+func NewTrans(ctx *Context, trans interface{}) context.Context {
+	return context.WithValue(ctx, transCtx{}, trans)
+}
+
+// FromTrans 从上下文中获取事务
+func FromTrans(ctx *Context) (interface{}, bool) {
+	v := ctx.Value(transCtx{})
+	return v, v != nil
+}
+
+// NewNoTrans 创建不使用事务的上下文
+func NewNoTrans(ctx *Context) context.Context {
+	return context.WithValue(ctx, noTransCtx{}, true)
+}
+
+// FromNoTrans 从上下文中获取不使用事务标识
+func FromNoTrans(ctx *Context) bool {
+	v := ctx.Value(noTransCtx{})
+	return v != nil && v.(bool)
+}
+
+// NewTransLock 创建事务锁的上下文
+func NewTransLock(ctx *Context) context.Context {
+	return context.WithValue(ctx, transLockCtx{}, true)
+}
+
+// FromTransLock 从上下文中获取事务锁
+func FromTransLock(ctx *Context) bool {
+	v := ctx.Value(transLockCtx{})
+	return v != nil && v.(bool)
+}
 func (ctx *Context) SetUserValue(key any, value interface{}) {
 	m := make(map[any]interface{})
 	m[key] = value

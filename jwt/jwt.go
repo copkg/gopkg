@@ -24,9 +24,9 @@ type CustomClaims struct {
 	UID     uint   `json:"uid"`
 	ID      int64  `json:"id"`
 	Role    string `json:"role,omitempty"`
-	StaffNo string `json:"staff_no,omitempty"`
-	AppID   int    `json:"app_id,omitempty"`
-	UserID  string `json:"user_id,omitempty"`
+	StaffNo string `json:"staffNo,omitempty"`
+	AppID   int    `json:"appId,omitempty"`
+	UserID  string `json:"userId,omitempty"`
 	Name    string `json:"name,omitempty"`
 	Avatar  string `json:"avatar,omitempty"`
 	Type    int8   `json:"type,omitempty"`
@@ -38,6 +38,7 @@ func NewJWT(c *JWTConf) *JWTConf {
 		SigningKey:    c.SigningKey,
 		ExpiresTime:   c.ExpiresTime,
 		SigningMethod: c.SigningMethod,
+		Issuer:        c.Issuer,
 	}
 }
 
