@@ -2,12 +2,13 @@ package context
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/copkg/gopkg/errors"
+	cerr "github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-playground/validator/v10"
@@ -113,6 +114,15 @@ func (ctx *Context) Error(err error) {
 		ret["err"] = e.Error()
 		statusCode = http.StatusUnprocessableEntity
 	}
+	if e, ok := err.(*json.UnmarshalTypeError); ok {
+
+		ret["code"] = http.StatusUnprocessableEntity
+		ret["message"] = "数据验证不通过"
+		ret["err"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
+		statusCode = http.StatusUnprocessableEntity
+
+		fmt.Println(ret, "||")
+	}
 	if e, ok := err.(*mysql.MySQLError); ok {
 		ret["code"] = http.StatusInternalServerError
 		ret["message"] = "服务异常"
@@ -130,7 +140,7 @@ func (ctx *Context) Error(err error) {
 		ret["err"] = errmsg
 		statusCode = http.StatusUnprocessableEntity
 	}
-	if e, ok := err.(errors.Error); ok {
+	if e, ok := err.(cerr.Error); ok {
 		ret["code"] = e.HttpCode()
 		ret["message"] = err.Error()
 		ret["err"] = e.Wrap()

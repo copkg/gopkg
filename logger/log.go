@@ -1,10 +1,12 @@
 package logger
 
 import (
-	"github.com/sirupsen/logrus"
-	"gopkg.in/natefinch/lumberjack.v2"
+	"context"
 	"io"
 	"os"
+
+	"github.com/sirupsen/logrus"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type LogConf struct {
@@ -54,7 +56,9 @@ func SetFormatter(formatter string) {
 func SetOutput(out io.Writer) {
 	logrus.SetOutput(out)
 }
-
+func WithContext(ctx context.Context) *logrus.Entry {
+	return logrus.WithContext(ctx)
+}
 func SetLevel(level int) {
 	logrus.SetLevel(logrus.Level(level))
 }
