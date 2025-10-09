@@ -3,7 +3,6 @@ package context
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -90,9 +89,6 @@ func (ctx *Context) Success(data interface{}) {
 	ctx.JSON(http.StatusOK, ret)
 }
 func (ctx *Context) Bind(data interface{}) error {
-	if ctx.Request.ContentLength == 0 {
-		return errors.New("The request body is empty")
-	}
 	return ctx.ShouldBind(data)
 }
 func (ctx *Context) Error(err error) {
