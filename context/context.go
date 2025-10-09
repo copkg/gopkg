@@ -3,15 +3,12 @@ package context
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
-	cerr "github.com/copkg/gopkg/errors"
 	"github.com/gin-gonic/gin"
-	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/go-playground/validator/v10"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -93,6 +90,9 @@ func (ctx *Context) Success(data interface{}) {
 	ctx.JSON(http.StatusOK, ret)
 }
 func (ctx *Context) Bind(data interface{}) error {
+	if ctx.Request.ContentLength == 0 {
+		return errors.New("The request body is empty")
+	}
 	return ctx.ShouldBind(data)
 }
 func (ctx *Context) Error(err error) {
@@ -102,49 +102,22 @@ func (ctx *Context) Error(err error) {
 		"message": err.Error(),
 		"time":    time.Now(),
 	}
-	if e, ok := err.(validation.InternalError); ok {
-		ret["code"] = http.StatusInternalServerError
-		ret["message"] = "数据验证不通过"
-		ret["err"] = e.Error()
-		statusCode = http.StatusInternalServerError
-	}
-	if e, ok := err.(validation.Errors); ok {
-		ret["code"] = http.StatusUnprocessableEntity
-		ret["message"] = "数据验证不通过"
-		ret["err"] = e.Error()
-		statusCode = http.StatusUnprocessableEntity
-	}
-	if e, ok := err.(*json.UnmarshalTypeError); ok {
-
-		ret["code"] = http.StatusUnprocessableEntity
-		ret["message"] = "数据验证不通过"
-		ret["err"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
-		statusCode = http.StatusUnprocessableEntity
-
-		fmt.Println(ret, "||")
-	}
-	if e, ok := err.(*mysql.MySQLError); ok {
+	switch e := err.(type) {
+	case *mysql.MySQLError:
 		ret["code"] = http.StatusInternalServerError
 		ret["message"] = "服务异常"
 		ret["err"] = e.Error()
 		statusCode = http.StatusInternalServerError
-	}
-	if _, ok := err.(validator.ValidationErrors); ok {
-		var errmsg []string
-		for _, ferr := range err.(validator.ValidationErrors) {
-			errmsg = append(errmsg, fmt.Sprintf("param %s %s", strings.ToLower(ferr.Field()), ferr.Tag()))
-		}
-		// 将字符串数组包装在一个map中以输出JSON格式
-		ret["code"] = http.StatusUnprocessableEntity
+	case *json.UnmarshalTypeError:
+		ret["code"] = http.StatusBadRequest
 		ret["message"] = "数据验证不通过"
-		ret["err"] = errmsg
-		statusCode = http.StatusUnprocessableEntity
-	}
-	if e, ok := err.(cerr.Error); ok {
-		ret["code"] = e.HttpCode()
-		ret["message"] = err.Error()
-		ret["err"] = e.Wrap()
-		statusCode = http.StatusUnprocessableEntity
+		ret["err"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
+		statusCode = http.StatusBadRequest
+	default:
+		ret["code"] = http.StatusBadRequest
+		ret["message"] = "数据验证不通过"
+		ret["err"] = e.Error()
+		statusCode = http.StatusBadRequest
 	}
 	ctx.JSON(statusCode, ret)
 }
