@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -98,6 +99,7 @@ func (ctx *Context) Error(err error) {
 		"message": err.Error(),
 		"time":    time.Now(),
 	}
+	fmt.Println(reflect.TypeOf(err), "**********")
 	switch e := err.(type) {
 	case *mysql.MySQLError:
 		ret["code"] = http.StatusInternalServerError

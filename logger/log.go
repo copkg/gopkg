@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 
+	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -19,6 +20,9 @@ type LogConf struct {
 	MaxBackups int
 	MaxAge     int
 	Compress   bool
+	Enablegray bool
+	GraylogUrl string
+	AppName    string
 }
 type Hook = logrus.Hook
 
@@ -42,6 +46,13 @@ func MustSetup(c *LogConf) {
 		SetOutput(lumber)
 	default:
 		SetOutput(os.Stdout)
+	}
+	if c.Enablegray {
+		graylogHook := graylog.NewGraylogHook(c.GraylogUrl, map[string]interface{}{
+			"app": c.AppName,
+		})
+		AddHook(graylogHook)
+		defer graylogHook.Flush()
 	}
 }
 func SetFormatter(formatter string) {
