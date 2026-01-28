@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -99,7 +99,7 @@ func (ctx *Context) Error(err error) {
 		"message": err.Error(),
 		"time":    time.Now(),
 	}
-	fmt.Println(reflect.TypeOf(err), "**********")
+
 	switch e := err.(type) {
 	case *mysql.MySQLError:
 		ret["code"] = http.StatusInternalServerError
@@ -112,10 +112,17 @@ func (ctx *Context) Error(err error) {
 		ret["err"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
 		statusCode = http.StatusBadRequest
 	default:
-		ret["code"] = http.StatusBadRequest
-		ret["message"] = "数据验证不通过"
-		ret["err"] = e.Error()
-		statusCode = http.StatusBadRequest
+		if err == io.EOF {
+			ret["code"] = http.StatusBadRequest
+			ret["message"] = "body参数不能为空"
+			statusCode = http.StatusBadRequest
+		} else {
+			ret["code"] = http.StatusBadRequest
+			ret["message"] = "数据验证不通过"
+			ret["err"] = e.Error()
+			statusCode = http.StatusBadRequest
+		}
+
 	}
 	ctx.JSON(statusCode, ret)
 }
