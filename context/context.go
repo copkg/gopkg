@@ -92,7 +92,37 @@ func (ctx *Context) Success(data interface{}) {
 func (ctx *Context) Bind(data interface{}) error {
 	return ctx.ShouldBind(data)
 }
+func (ctx *Context) APIError(err error) {
+	statusCode := http.StatusBadRequest
+	ret := gin.H{
+		"error_description": err.Error(),
+		"error":             "bad_request",
+	}
+
+	switch e := err.(type) {
+	case *mysql.MySQLError:
+		statusCode = http.StatusInternalServerError
+		ret["error"] = "server_invalid"
+		ret["error_description"] = e.Error()
+		statusCode = http.StatusInternalServerError
+	case *json.UnmarshalTypeError:
+		ret["error"] = "bad_request"
+		ret["error_description"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
+	default:
+		if err == io.EOF {
+			ret["error"] = "body_invalid"
+			ret["error_description"] = fmt.Sprintf("Content-Type must %s", "application/json;")
+		} else {
+			ret["error"] = "parameter_invalid"
+			ret["error_description"] = e.Error()
+		}
+
+	}
+	ctx.JSON(statusCode, ret)
+}
+
 func (ctx *Context) Error(err error) {
+
 	statusCode := http.StatusBadRequest
 	ret := gin.H{
 		"code":    http.StatusBadRequest,
@@ -104,22 +134,23 @@ func (ctx *Context) Error(err error) {
 	case *mysql.MySQLError:
 		ret["code"] = http.StatusInternalServerError
 		ret["message"] = "服务异常"
-		ret["err"] = e.Error()
+		ret["error_description"] = e.Error()
 		statusCode = http.StatusInternalServerError
 	case *json.UnmarshalTypeError:
 		ret["code"] = http.StatusBadRequest
 		ret["message"] = "数据验证不通过"
-		ret["err"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
+		ret["error_description"] = fmt.Sprintf("param %s should be %s not %s", e.Field, e.Type.String(), e.Value)
 		statusCode = http.StatusBadRequest
 	default:
 		if err == io.EOF {
 			ret["code"] = http.StatusBadRequest
 			ret["message"] = "body参数不能为空"
+			ret["error_description"] = "body参数不能为空"
 			statusCode = http.StatusBadRequest
 		} else {
 			ret["code"] = http.StatusBadRequest
 			ret["message"] = "数据验证不通过"
-			ret["err"] = e.Error()
+			ret["error_description"] = e.Error()
 			statusCode = http.StatusBadRequest
 		}
 

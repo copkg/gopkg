@@ -11,9 +11,9 @@ import (
 func NoMethodHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusMethodNotAllowed, gin.H{
-			"code":    http.StatusMethodNotAllowed,
-			"message": http.StatusText(http.StatusMethodNotAllowed),
-			"time":    time.Now().Unix(),
+			"error":             http.StatusText(http.StatusMethodNotAllowed),
+			"error_description": "Method Not Allowed",
+			"time":              time.Now().Unix(),
 		})
 	}
 }
@@ -22,9 +22,9 @@ func NoMethodHandler() gin.HandlerFunc {
 func NoRouteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
-			"code":    http.StatusNotFound,
-			"message": http.StatusText(http.StatusNotFound),
-			"time":    time.Now().Unix(),
+			"error":             http.StatusText(http.StatusNotFound),
+			"error_description": "the path is missing",
+			"time":              time.Now().Unix(),
 		})
 	}
 }

@@ -3,8 +3,9 @@ package sms
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"github.com/go-resty/resty/v2"
-	"github.com/pkg/errors"
 	"strings"
 	"time"
 )
@@ -48,7 +49,7 @@ func (s *Smser) authenticator(str string) string {
 	hash := md5.Sum([]byte(str))
 	return base64.StdEncoding.EncodeToString(hash[:])
 }
-func (s *Smser) Send(content, mobile string) (string, error) {
+func (s *Smser) Send(content, mobile string) (*SIRes, error) {
 	var data = make(map[string]string)
 	timeStamp := s.timeStamp()
 	data["siid"] = s.Siid
@@ -56,19 +57,20 @@ func (s *Smser) Send(content, mobile string) (string, error) {
 	data["streamingNo"] = s.Siid + timeStamp
 	data["timeStamp"] = timeStamp
 	data["authenticator"] = s.authenticator(timeStamp + timeStamp + data["streamingNo"] + s.SecretKey)
+
 	data["content"] = content
 	data["mobile"] = mobile
 	data["transactionID"] = timeStamp
-	var res SIRes
+	var result *SIRes
 	_, err := client.R().
 		SetBody(data).
-		SetResult(&res).
+		SetResult(&result).
 		Post(smsUrl)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	if res.RetCode != "0000" {
-		return "", errors.New(res.RetMsg)
+	if result.RetCode != "0000" {
+		return result, errors.New(fmt.Sprintf("call smsservice err,retCode:%s,retMsg:%s", result.RetCode, result.RetMsg))
 	}
-	return res.TransactionID, nil
+	return result, nil
 }
