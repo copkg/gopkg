@@ -1,7 +1,6 @@
 package wechat
 
 import (
-	"github.com/ArtisanCloud/PowerWeChat/v3/src/kernel"
 	"github.com/ArtisanCloud/PowerWeChat/v3/src/work"
 )
 
@@ -41,11 +40,6 @@ func NewWork(c *WorkConf) *work.Work {
 		},
 		HttpDebug: c.HttpDebug,
 		// 可选，不传默认走程序内存
-		Cache: kernel.NewRedisClient(&kernel.UniversalOptions{
-			Addrs:    c.CacheAddrs,
-			Password: c.CachePassword,
-			DB:       c.CacheDB,
-		}),
 	})
 	if err != nil {
 		panic(err)
