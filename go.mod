@@ -1,4 +1,4 @@
-module github.com/copkg/gopkg
+module 172.16.201.180:8080/shulangroup/gopkg
 
 go 1.25.0
 
