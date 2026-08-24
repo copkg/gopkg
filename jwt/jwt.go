@@ -21,15 +21,16 @@ type JWTConf struct {
 var JWT *JWTConf
 
 type CustomClaims struct {
-	UID     uint   `json:"uid"`
-	ID      int64  `json:"id"`
-	Role    string `json:"role,omitempty"`
-	StaffNo string `json:"staffNo,omitempty"`
-	AppID   int    `json:"appId,omitempty"`
-	UserID  string `json:"userId,omitempty"`
-	Name    string `json:"name,omitempty"`
-	Avatar  string `json:"avatar,omitempty"`
-	Type    int8   `json:"type,omitempty"`
+	UID      uint   `json:"uid"`
+	ID       int64  `json:"id"`
+	Role     string `json:"role,omitempty"`
+	StaffNo  string `json:"staffNo,omitempty"`
+	AppID    int    `json:"appId,omitempty"`
+	UserID   string `json:"userId,omitempty"`
+	UserIDV2 string `json:"userid,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Avatar   string `json:"avatar,omitempty"`
+	Type     int8   `json:"type,omitempty"`
 	jwt.RegisteredClaims
 }
 
